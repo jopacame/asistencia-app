@@ -186,6 +186,7 @@
       .hero { padding: 12px; }
       .hero h1 { font-size: 1.3rem; margin-bottom: 2px; word-break: break-word; }
       .hero p { font-size: 0.8rem; }
+      .hero img[alt="Logo"] { width: 36px; height: 36px; }
       #heroInner { flex-direction: column; align-items: flex-start; width: 100%; }
       #heroInner > div:last-child { align-self: flex-end; }
       #heroInner > div:first-child { min-width: 0; width: 100%; }
@@ -208,6 +209,7 @@
       .hero { padding: 8px; }
       .hero h1 { font-size: 1.1rem; }
       .hero p { font-size: 0.7rem; }
+      .hero img[alt="Logo"] { width: 28px; height: 28px; }
       .container { padding: 4px; }
       .card { padding: 8px; margin-bottom: 8px; border-radius: 8px; }
       .card h2 { font-size: 0.95rem; }
@@ -222,6 +224,7 @@
       .hero { padding: 4px 12px; }
       .hero h1 { font-size: 0.85rem; margin-bottom: 0; display: inline; }
       .hero p { font-size: 0.65rem; margin: 0; opacity: 0.85; display: inline; }
+      .hero img[alt="Logo"] { width: 24px; height: 24px; }
       .hero p::before { content: " - "; }
       #heroInner { flex-direction: row; align-items: center; width: 100%; }
       #heroInner > div:first-child { min-width: 0; width: auto; }
@@ -267,9 +270,12 @@
 
 <div class="hero">
   <div id="heroInner" style="display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto;flex-wrap:wrap;gap:8px;">
-    <div style="text-align:left;min-width:200px;">
-      <h1 style="margin:0;">JOPACAMEAsistencia</h1>
-      <p style="margin:4px 0 0 0;">Asistencia de los Trabajadores del CONSORCIO GÉNESIS</p>
+    <div style="display:flex;align-items:center;gap:12px;text-align:left;min-width:200px;">
+      <img src="/launchericon-192x192.png" alt="Logo" style="width:48px;height:48px;border-radius:10px;flex-shrink:0;">
+      <div>
+        <h1 style="margin:0;">JOPACAMEAsistencia</h1>
+        <p style="margin:2px 0 0 0;">Asistencia de los Trabajadores del CONSORCIO GÉNESIS</p>
+      </div>
     </div>
     <div style="display:flex;gap:8px;flex-shrink:0;">
       <button class="btn btn-outline" onclick="loginAdmin()" id="mainMantenimiento" style="border-color:#fff;color:#fff;">🔧 Mantenimiento</button>
