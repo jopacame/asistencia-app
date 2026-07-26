@@ -179,9 +179,44 @@
     .photo-viewer-close:hover { background:rgba(255,255,255,0.2); }
 
     @media (max-width: 600px) {
+      .hero { padding: 20px 16px; }
       .hero h1 { font-size: 1.6rem; }
+      .hero p { font-size: 0.9rem; }
       .form-row input, .form-row select { min-width: 100%; }
       .today-grid { grid-template-columns: 1fr; }
+      .card { padding: 16px; }
+      .container { padding: 12px; }
+      #attVideo { max-height: 260px; }
+      .table-wrapper { overflow-x: auto; }
+      table { font-size: 0.8rem; }
+      th, td { padding: 6px 4px; }
+      .att-photo-thumb { width: 40px; height: 40px; }
+    }
+    @media (orientation: landscape) and (max-height: 500px) {
+      .hero { padding: 8px 16px; }
+      .hero h1 { font-size: 1.2rem; }
+      .hero p { font-size: 0.75rem; display: none; }
+      .card { padding: 10px 14px; margin-bottom: 10px; }
+      .card h2 { font-size: 1rem; margin-bottom: 8px; padding-bottom: 6px; }
+      .form-row { gap: 6px; margin-bottom: 8px; }
+      .form-row input, .form-row select { padding: 6px 10px; font-size: 0.85rem; }
+      #attVideo { max-height: 160px; }
+      .camera-area { padding: 6px; }
+      .camera-actions { gap: 6px; }
+      .camera-actions .btn { font-size: 0.8rem; padding: 6px 12px; }
+      #attendanceDni { font-size: 1rem; letter-spacing: 2px; padding: 6px; }
+      .today-grid { grid-template-columns: 1fr; gap: 8px; }
+      .worker-list { gap: 6px; }
+      .worker-tag { padding: 6px 10px; }
+      .btn { font-size: 0.8rem; padding: 6px 12px; }
+      #workerFound > div:first-child { padding: 8px; margin-bottom: 8px; gap: 10px; }
+      #workerFound > div:first-child img { width: 40px; height: 40px; }
+      #workerFound > div:first-child div:first-child { width: 40px; height: 40px; font-size: 1.1rem; }
+      table { font-size: 0.7rem; }
+      th, td { padding: 4px 3px; }
+      .att-photo-thumb { width: 32px; height: 32px; }
+      .badge { font-size: 0.6rem; padding: 2px 5px; }
+      .photo-viewer-close { top: 8px; right: 12px; width: 36px; height: 36px; font-size: 1.5rem; }
     }
 
     @media print {
