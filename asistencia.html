@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsistenciaApp - Control de Asistencia</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a73e8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; color: #333; }
+
+    /* Hero / Header */
+    .hero {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: #fff;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 8px; }
+    .hero p { font-size: 1.1rem; opacity: 0.9; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+    /* Tarjetas */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      color: #1a73e8;
+      border-bottom: 2px solid #e8eaf6;
+      padding-bottom: 10px;
+    }
+
+    /* Formularios */
+    .form-row {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .form-row input, .form-row select {
+      flex: 1; min-width: 180px;
+      padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .form-row input:focus, .form-row select:focus {
+      outline: none; border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
+    }
+
+    .btn {
+      padding: 10px 24px; border: none; border-radius: 8px;
+      font-size: 0.95rem; cursor: pointer; font-weight: 600;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-primary { background: #1a73e8; color: #fff; }
+    .btn-primary:hover { background: #1557b0; }
+    .btn-success { background: #34a853; color: #fff; }
+    .btn-success:hover { background: #2d8f47; }
+    .btn-danger { background: #ea4335; color: #fff; }
+    .btn-danger:hover { background: #c62828; }
+    .btn-outline { background: transparent; color: #1a73e8; border: 2px solid #1a73e8; }
+    .btn-outline:hover { background: #1a73e8; color: #fff; }
+    .btn-sm { padding: 4px 10px; font-size: 0.8rem; }
+    .admin-tab { border:none; cursor:pointer; font-size:0.9rem; padding:12px; transition:all 0.2s; }
+    .admin-tab:hover { opacity:0.85; }
+
+    /* Tabla */
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 12px 14px; text-align: left; border-bottom: 1px solid #eee;
+      font-size: 0.95rem;
+    }
+    th { background: #f5f7fa; font-weight: 600; color: #555; }
+    tr:hover td { background: #f8f9ff; }
+
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 0.8rem; font-weight: 600;
+    }
+    .badge-presente { background: #e6f4ea; color: #1e7e34; }
+    .badge-ausente { background: #fce8e6; color: #c5221f; }
+    .badge-tardanza { background: #fef7e0; color: #e37400; }
+
+    .worker-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+    .worker-tag {
+      display: flex; align-items: center; gap: 8px;
+      background: #f0f4ff; border: 1px solid #d2e3fc;
+      padding: 8px 16px; border-radius: 8px;
+    }
+    .worker-tag .name { font-weight: 500; }
+    .worker-tag .pos { font-size: 0.8rem; color: #666; }
+    .worker-tag .del { cursor: pointer; color: #ea4335; font-weight: bold; font-size: 1.2rem; }
+    .worker-tag .edit-btn { cursor: pointer; color: #1a73e8; font-size: 1rem; padding: 2px 4px; border-radius: 4px; }
+    .worker-tag .edit-btn:hover { background: #e0e3ff; }
+
+    .stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+    .stat-item { text-align: center; flex: 1; min-width: 100px; }
+    .stat-item .num { font-size: 2rem; font-weight: 700; color: #1a73e8; }
+    .stat-item .label { font-size: 0.85rem; color: #666; }
+
+    .today-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .today-card {
+      background: #f8f9ff; border: 1px solid #e0e3ff; border-radius: 10px;
+      padding: 16px; text-align: center;
+    }
+    .today-card .tname { font-weight: 600; margin-bottom: 4px; }
+    .today-card .tpos { font-size: 0.8rem; color: #888; margin-bottom: 10px; }
+    .btn-block { width: 100%; margin-bottom: 6px; }
+    .att-item { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 8px; margin-bottom: 6px; font-size: 0.82rem; }
+    .att-entry { background: #e8f5e9; }
+    .att-exit { background: #e3f2fd; }
+    .att-label { font-weight: 600; color: #555; min-width: 44px; }
+    .att-time { font-family: Consolas,monospace; font-weight: 700; font-size: 0.9rem; }
+
+    /* Camera */
+    .camera-area { margin-bottom: 16px; }
+    .camera-area video { width: 100%; max-width: 360px; border-radius: 10px; background: #000; display: block; margin-bottom: 8px; }
+    .camera-area canvas { display: none; }
+    .camera-area .photo-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #1a73e8; }
+    .camera-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .worker-photo { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #d2e3fc; flex-shrink: 0; }
+    .worker-photo-sm { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid #d2e3fc; vertical-align: middle; margin-right: 6px; }
+
+    .toast {
+      position: fixed; bottom: 30px; right: 30px;
+      background: #323232; color: #fff; padding: 14px 24px;
+      border-radius: 8px; font-size: 0.95rem;
+      opacity: 0; transform: translateY(20px);
+      transition: all 0.3s; z-index: 1000;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #34a853; }
+    .toast.error { background: #ea4335; }
+
+    .loading { text-align: center; padding: 40px; color: #888; }
+
+    .modal-overlay {
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5); z-index:2000;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .modal-content {
+      background:#fff; border-radius:12px; padding:28px;
+      max-width:480px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.2);
+    }
+    .att-photo-thumb {
+      width:56px; height:56px; border-radius:6px; object-fit:cover;
+      border:2px solid #e0e3ff; cursor:pointer; transition:transform 0.2s;
+    }
+    .att-photo-thumb:hover { transform:scale(1.15); }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.6rem; }
+      .form-row input, .form-row select { min-width: 100%; }
+      .today-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .hero, .card:first-of-type, #adminSection > div:first-of-type, #panelSupervision, .camera-area, .form-row, .btn, .worker-list, .today-grid, #toast, #mainMantenimiento, #adminLogout, #workerNotFound, #workerFound > div:not(#attStatus), #editModal, .modal-overlay { display: none !important; }
+      #panelHistory, #adminSection, #attCameraArea { display: block !important; box-shadow: none; border: none; padding: 0; }
+      body { background: #fff; }
+      .table-wrapper { overflow: visible; }
+      th { background: #f5f7fa !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .att-photo-thumb { width:40px !important; height:40px !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto;">
+    <div style="text-align:left;">
+      <h1 style="margin:0;">AsistenciaApp</h1>
+      <p style="margin:4px 0 0 0;">Control de asistencia para tus trabajadores</p>
+    </div>
+    <button class="btn btn-outline" onclick="loginAdmin()" id="mainMantenimiento" style="border-color:#fff;color:#fff;">🔧 Mantenimiento</button>
+    <button class="btn btn-outline" onclick="logoutAdmin()" id="adminLogout" style="border-color:#fff;color:#fff;display:none;">🔓 Cerrar Sesión</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PANEL 1: Control de Asistencia Diario (ACCESO LIBRE) -->
+  <div class="card">
+    <h2>📋 Control de Asistencia Diario</h2>
+    <div class="form-row">
+      <input type="text" id="attendanceDni" placeholder="Ingresa DNI del trabajador" maxlength="8" inputmode="numeric" style="font-size:1.2rem;text-align:center;font-weight:600;letter-spacing:4px;">
+      <button class="btn btn-primary" onclick="lookupWorker()">Buscar</button>
+    </div>
+
+    <div id="workerNotFound" style="display:none;padding:24px;text-align:center;background:#fce8e6;border-radius:10px;margin-top:12px;">
+      <p style="color:#c5221f;font-weight:700;font-size:1.1rem;">✕ Trabajador no registrado</p>
+      <p style="color:#666;margin-top:6px;">Debe registrarse en el área de <strong>SUPERVISIÓN</strong>.</p>
+    </div>
+
+    <div id="workerFound" style="display:none;">
+      <div style="display:flex;align-items:center;gap:16px;padding:16px;background:#f0f4ff;border-radius:10px;margin-bottom:16px;">
+        <img id="attWorkerPhoto" class="worker-photo" style="width:64px;height:64px;display:none;">
+        <div id="attWorkerAvatar" style="width:64px;height:64px;border-radius:50%;background:#e0e3ff;display:none;align-items:center;justify-content:center;font-weight:bold;color:#1a73e8;font-size:1.5rem;flex-shrink:0;"></div>
+        <div>
+          <div style="font-weight:700;font-size:1.2rem;" id="attWorkerName"></div>
+          <div style="color:#888;" id="attWorkerCargo"></div>
+        </div>
+      </div>
+
+      <div id="attStatus" style="margin-bottom:12px;"></div>
+
+      <div class="camera-area" id="attCameraArea">
+        <video id="attVideo" autoplay playsinline></video>
+        <canvas id="attCanvas"></canvas>
+        <div class="camera-actions">
+          <button class="btn btn-outline" onclick="startAttCamera()">📷 Abrir Cámara</button>
+          <button class="btn btn-primary" onclick="captureAttPhoto()">Tomar Foto</button>
+          <button class="btn btn-danger" onclick="stopAttCamera()" id="stopAttCam" style="display:none;">Cerrar Cámara</button>
+          <img id="attPhotoPreview" class="photo-preview" style="display:none;">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-success" onclick="markAttendance('entry')" id="btnEntry" style="flex:1;">🟢 Marcar Entrada</button>
+        <button class="btn btn-primary" onclick="markAttendance('exit')" id="btnExit" style="flex:1;display:none;">🔵 Marcar Salida</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANELES ADMIN (requiere login) -->
+  <div id="adminSection" style="display:none;">
+
+    <div style="display:flex;gap:0;margin-bottom:0;">
+      <button class="btn admin-tab" onclick="switchAdminTab('supervision')" id="tabSupervision" style="flex:1;border-radius:12px 12px 0 0;background:#1a73e8;color:#fff;font-weight:700;">👥 SUPERVISIÓN</button>
+      <button class="btn admin-tab" onclick="switchAdminTab('history')" id="tabHistory" style="flex:1;border-radius:12px 12px 0 0;background:#e0e3ff;color:#555;">📊 HISTORIAL</button>
+    </div>
+
+    <div id="panelSupervision" class="card" style="border-radius:0 0 12px 12px;margin-top:0;">
+      <h2>Registrar Trabajador</h2>
+      <div class="camera-area">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <div class="camera-actions">
+          <button class="btn btn-outline" onclick="startCamera()">Abrir Cámara</button>
+          <button class="btn btn-primary" onclick="capturePhoto()">Tomar Foto</button>
+          <button class="btn btn-danger" onclick="stopCamera()" id="stopCamBtn" style="display:none;">Cerrar Cámara</button>
+          <img id="photoPreview" class="photo-preview" style="display:none;">
+        </div>
+      </div>
+      <div class="form-row">
+        <input type="text" id="workerName" placeholder="Nombre completo">
+        <input type="text" id="workerDni" placeholder="DNI (8 dígitos)" maxlength="8" inputmode="numeric">
+        <input type="email" id="workerEmail" placeholder="Correo electrónico">
+      </div>
+      <div class="form-row">
+        <input type="text" id="workerCelular" placeholder="Celular (+51 999999999)">
+        <select id="workerCargo">
+          <option value="">-- Seleccionar Cargo --</option>
+          <option value="Ing. Coordinador">Ing. Coordinador</option>
+          <option value="Ing. Supervisor">Ing. Supervisor</option>
+          <option value="Ing. Asistente Supervisión">Ing. Asistente Supervisión</option>
+          <option value="Ing. Asistente de Campo">Ing. Asistente de Campo</option>
+          <option value="Ing. Gestor de OT">Ing. Gestor de OT</option>
+          <option value="Almacenero(a)">Almacenero(a)</option>
+          <option value="Jefe de Grupo">Jefe de Grupo</option>
+          <option value="Técnico Electricista">Técnico Electricista</option>
+          <option value="Practicante">Practicante</option>
+          <option value="Invitado">Invitado</option>
+        </select>
+        <button class="btn btn-primary" onclick="addWorker()" id="saveBtn">Agregar</button>
+        <button class="btn btn-outline" onclick="cancelEdit()" id="cancelBtn" style="display:none;">Cancelar</button>
+      </div>
+
+      <div style="background:#f8f9ff;border-radius:10px;padding:16px;margin-top:16px;">
+        <h2 style="margin-top:0;">📦 Importación Masiva</h2>
+        <p style="color:#666;font-size:0.9rem;margin-bottom:12px;">Descarga la plantilla, llénala en Excel y súbela para registrar varios trabajadores a la vez.</p>
+        <div class="form-row">
+          <button class="btn btn-outline" onclick="downloadTemplate()">📥 Descargar Plantilla CSV</button>
+          <input type="file" id="csvFile" accept=".csv" style="flex:2;padding:8px;border:1px solid #ddd;border-radius:8px;">
+          <button class="btn btn-primary" onclick="importWorkers()">📤 Importar</button>
+        </div>
+        <div id="importResults" style="font-size:0.9rem;"></div>
+      </div>
+
+      <h2 style="margin-top:24px;">Trabajadores Registrados</h2>
+      <div id="workersContainer" class="loading">Cargando...</div>
+    </div>
+
+    <div id="panelHistory" class="card" style="border-radius:0 0 12px 12px;margin-top:0;display:none;">
+      <h2>Historial de Asistencia</h2>
+      <div class="form-row">
+        <input type="date" id="filterDate">
+        <button class="btn btn-outline" onclick="loadHistory()">Filtrar</button>
+        <button class="btn btn-outline" onclick="document.getElementById('filterDate').value='';loadHistory();">Todos</button>
+        <button class="btn btn-outline" onclick="exportExcel()">Exportar Excel</button>
+        <button class="btn btn-outline" onclick="window.print()">Imprimir / PDF</button>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Trabajador</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Foto Entrada</th><th>Foto Salida</th><th>Ubicación</th><th>Acciones</th></tr></thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+      <div id="historyEmpty" style="text-align:center;padding:20px;color:#888;display:none;">Sin registros</div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="editModal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal-content">
+    <h3 style="margin-bottom:16px;">✏️ Editar Registro de Asistencia</h3>
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-weight:600;margin-bottom:4px;">Trabajador</label>
+      <div id="editWorkerName" style="padding:8px 12px;background:#f5f7fa;border-radius:6px;"></div>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
+      <div style="flex:1;min-width:150px;">
+        <label style="display:block;font-weight:600;margin-bottom:4px;">Hora Entrada</label>
+        <input type="time" id="editEntryTime" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+      </div>
+      <div style="flex:1;min-width:150px;">
+        <label style="display:block;font-weight:600;margin-bottom:4px;">Hora Salida</label>
+        <input type="time" id="editExitTime" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:1rem;">
+      </div>
+    </div>
+    <div id="editModalPhotos" style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;"></div>
+    <div style="display:flex;gap:12px;justify-content:flex-end;">
+      <button class="btn btn-outline" onclick="closeEditModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEditAttendance()">Guardar Cambios</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let editingWorkerId = null;
+let editingWorkerPhoto = null;
+/* Auth */
+let isAdmin = false;
+async function loginAdmin() {
+  const pw = prompt('Ingresa la contraseña de administrador:');
+  if (!pw) return;
+  const res = await fetch(API + '/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: pw })
+  });
+  if (!res.ok) return toast('Contraseña incorrecta', 'error');
+  isAdmin = true;
+  document.getElementById('adminSection').style.display = '';
+  document.getElementById('mainMantenimiento').style.display = 'none';
+  document.getElementById('adminLogout').style.display = '';
+  switchAdminTab('supervision');
+  loadHistory();
+}
+function logoutAdmin() {
+  isAdmin = false;
+  document.getElementById('adminSection').style.display = 'none';
+  document.getElementById('mainMantenimiento').style.display = '';
+  document.getElementById('adminLogout').style.display = 'none';
+  resetAttendancePanel();
+}
+function switchAdminTab(tab) {
+  document.getElementById('panelSupervision').style.display = tab === 'supervision' ? '' : 'none';
+  document.getElementById('panelHistory').style.display = tab === 'history' ? '' : 'none';
+  document.getElementById('tabSupervision').style.background = tab === 'supervision' ? '#1a73e8' : '#e0e3ff';
+  document.getElementById('tabSupervision').style.color = tab === 'supervision' ? '#fff' : '#555';
+  document.getElementById('tabHistory').style.background = tab === 'history' ? '#1a73e8' : '#e0e3ff';
+  document.getElementById('tabHistory').style.color = tab === 'history' ? '#fff' : '#555';
+  if (tab === 'history') loadHistory();
+  if (tab === 'supervision') loadWorkers();
+}
+
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'toast ' + type;
+  setTimeout(() => el.classList.add('show'), 10);
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getPosition() {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 });
+  });
+}
+
+function latLngToUtm(lat, lng) {
+  const a = 6378137.0, f = 1/298.257223563, k0 = 0.9996;
+  const zone = Math.floor((lng + 180) / 6) + 1;
+  const hem = lat >= 0 ? 'N' : 'S';
+  const latR = lat * Math.PI / 180, lngR = lng * Math.PI / 180;
+  const cm = ((zone - 1) * 6 - 180 + 3) * Math.PI / 180;
+  const dL = lngR - cm;
+  const e = Math.sqrt(1 - (1-f)*(1-f)), e2 = e*e;
+  const N = a / Math.sqrt(1 - e2 * Math.sin(latR) ** 2);
+  const T = Math.tan(latR) ** 2;
+  const C = e2 * Math.cos(latR) ** 2 / (1 - e2);
+  const A = Math.cos(latR) * dL;
+  const M0 = 1 - e2/4 - 3*e2*e2/64 - 5*e2*e2*e2/256;
+  const M2 = 3*e2/8 + 3*e2*e2/32 + 45*e2*e2*e2/1024;
+  const M4 = 15*e2*e2/256 + 45*e2*e2*e2/1024;
+  const M6 = 35*e2*e2*e2/3072;
+  const M = a * (M0*latR - M2*Math.sin(2*latR) + M4*Math.sin(4*latR) - M6*Math.sin(6*latR));
+  let east = k0 * N * (A + (1-T+C)*A**3/6 + (5-18*T+T*T+72*C-58*e2)*A**5/120) + 500000;
+  let north = k0 * (M + N*Math.tan(latR)*(A**2/2 + (5-T+9*C+4*C*C)*A**4/24 + (61-58*T+T*T+600*C-330*e2)*A**6/720));
+  if (hem === 'S') north += 10000000;
+  return { zone, hem, east, north };
+}
+
+/* Cámara para foto de trabajador (admin - SUPERVISIÓN) */
+let mediaStream = null;
+let capturedPhoto = null;
+
+async function startCamera() {
+  if (mediaStream) return;
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
+    document.getElementById('video').srcObject = mediaStream;
+    document.getElementById('stopCamBtn').style.display = '';
+  } catch (e) {
+    toast('No se pudo acceder a la cámara: ' + e.message, 'error');
+  }
+}
+
+function stopCamera() {
+  if (mediaStream) {
+    mediaStream.getTracks().forEach(t => t.stop());
+    mediaStream = null;
+  }
+  document.getElementById('video').srcObject = null;
+  document.getElementById('stopCamBtn').style.display = 'none';
+}
+
+async function capturePhoto() {
+  if (!mediaStream) return toast('Abre la cámara primero', 'error');
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  const dateStr = new Date().toLocaleString('es-PE');
+  try {
+    const pos = await getPosition();
+    const utm = latLngToUtm(pos.coords.latitude, pos.coords.longitude);
+    const utmStr = `UTM: ${utm.zone}${utm.hem} ${utm.east.toFixed(2)} E ${utm.north.toFixed(2)} N`;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(canvas.width - 440, canvas.height - 70, 430, 60);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 13px Consolas,monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(dateStr, canvas.width - 15, canvas.height - 42);
+    ctx.fillText(utmStr, canvas.width - 15, canvas.height - 18);
+  } catch (e) {
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(canvas.width - 380, canvas.height - 50, 370, 40);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 13px Consolas,monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(dateStr + ' (sin ubicación)', canvas.width - 15, canvas.height - 18);
+  }
+  capturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
+  const preview = document.getElementById('photoPreview');
+  preview.src = capturedPhoto;
+  preview.style.display = '';
+  toast('Foto capturada');
+}
+
+function clearCapturedPhoto() {
+  capturedPhoto = null;
+  document.getElementById('photoPreview').style.display = 'none';
+  stopCamera();
+}
+
+
+
+/* Cámara para foto de asistencia (panel libre) */
+let attMediaStream = null;
+let attCapturedPhoto = null;
+
+async function startAttCamera() {
+  if (attMediaStream) return;
+  try {
+    attMediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
+    document.getElementById('attVideo').srcObject = attMediaStream;
+    document.getElementById('stopAttCam').style.display = '';
+  } catch (e) {
+    toast('No se pudo acceder a la cámara: ' + e.message, 'error');
+  }
+}
+
+function stopAttCamera() {
+  if (attMediaStream) {
+    attMediaStream.getTracks().forEach(t => t.stop());
+    attMediaStream = null;
+  }
+  document.getElementById('attVideo').srcObject = null;
+  document.getElementById('stopAttCam').style.display = 'none';
+}
+
+async function captureAttPhoto() {
+  if (!attMediaStream) return toast('Abre la cámara primero', 'error');
+  const video = document.getElementById('attVideo');
+  const canvas = document.getElementById('attCanvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  const dateStr = new Date().toLocaleString('es-PE');
+  try {
+    const pos = await getPosition();
+    const utm = latLngToUtm(pos.coords.latitude, pos.coords.longitude);
+    const utmStr = `UTM: ${utm.zone}${utm.hem} ${utm.east.toFixed(2)} E ${utm.north.toFixed(2)} N`;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(canvas.width - 440, canvas.height - 70, 430, 60);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 13px Consolas,monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(dateStr, canvas.width - 15, canvas.height - 42);
+    ctx.fillText(utmStr, canvas.width - 15, canvas.height - 18);
+  } catch (e) {
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(canvas.width - 380, canvas.height - 50, 370, 40);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 13px Consolas,monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(dateStr + ' (sin ubicación)', canvas.width - 15, canvas.height - 18);
+  }
+  attCapturedPhoto = canvas.toDataURL('image/jpeg', 0.8);
+  const preview = document.getElementById('attPhotoPreview');
+  preview.src = attCapturedPhoto;
+  preview.style.display = '';
+  toast('Foto capturada');
+}
+
+/* DNI Lookup & Attendance (panel libre) */
+let currentAttendanceWorker = null;
+
+async function lookupWorker() {
+  const dni = document.getElementById('attendanceDni').value.trim();
+  if (!dni) return toast('Ingresa un DNI', 'error');
+  const res = await fetch(API + '/api/workers');
+  const workers = await res.json();
+  const w = workers.find(x => x.dni === dni);
+  document.getElementById('workerNotFound').style.display = 'none';
+  document.getElementById('workerFound').style.display = 'none';
+  stopAttCamera();
+  attCapturedPhoto = null;
+  document.getElementById('attPhotoPreview').style.display = 'none';
+  if (!w) {
+    document.getElementById('workerNotFound').style.display = '';
+    return;
+  }
+  currentAttendanceWorker = w;
+  const nameEl = document.getElementById('attWorkerName');
+  nameEl.textContent = w.name;
+  document.getElementById('attWorkerCargo').textContent = w.cargo || 'Trabajador';
+  const photoImg = document.getElementById('attWorkerPhoto');
+  const avatar = document.getElementById('attWorkerAvatar');
+  if (w.photoData || w.photo) {
+    photoImg.src = w.photoData || '/photos/' + w.photo;
+    photoImg.style.display = '';
+    avatar.style.display = 'none';
+  } else {
+    photoImg.style.display = 'none';
+    avatar.style.display = 'flex';
+    avatar.textContent = w.name.charAt(0).toUpperCase();
+  }
+  document.getElementById('workerFound').style.display = '';
+  await startAttCamera();
+  loadAttendanceStatus();
+}
+
+async function loadAttendanceStatus() {
+  if (!currentAttendanceWorker) return;
+  const date = todayStr();
+  const res = await fetch(API + '/api/attendance?date=' + date);
+  const records = await res.json();
+  const rec = records.find(r => r.workerId === currentAttendanceWorker.id);
+  const statusEl = document.getElementById('attStatus');
+  const btnEntry = document.getElementById('btnEntry');
+  const btnExit = document.getElementById('btnExit');
+  const cameraArea = document.getElementById('attCameraArea');
+  if (rec && rec.entryTime) {
+    const entryBadge = rec.entryStatus === 'puntual' ? 'badge-presente' : 'badge-tardanza';
+    const entryLabel = rec.entryStatus === 'puntual' ? 'Puntual' : 'Tardanza';
+    if (rec.exitTime) {
+      const exitBadge = rec.exitStatus === 'normal' ? 'badge-presente' : (rec.exitStatus === 'fuera_horario' ? 'badge-tardanza' : 'badge-ausente');
+      const exitLabel = rec.exitStatus === 'normal' ? 'Normal' : (rec.exitStatus === 'fuera_horario' ? 'Fuera horario' : 'Anticipado');
+      statusEl.innerHTML = `<div style="padding:14px;background:#e8f5e9;border-radius:10px;font-size:0.95rem;">
+        <strong>✅ Jornada completa</strong><br>
+        Entrada: ${rec.entryTime} <span class="badge ${entryBadge}">${entryLabel}</span>
+        | Salida: ${rec.exitTime} <span class="badge ${exitBadge}">${exitLabel}</span>
+      </div>`;
+      btnEntry.style.display = 'none';
+      btnExit.style.display = 'none';
+      cameraArea.style.display = 'none';
+    } else {
+      statusEl.innerHTML = `<div style="padding:14px;background:#fff8e1;border-radius:10px;font-size:0.95rem;">
+        <strong>⏳ Entrada registrada</strong><br>
+        Entrada: ${rec.entryTime} <span class="badge ${entryBadge}">${entryLabel}</span>
+        <br><span style="color:#888;font-size:0.85rem;">Toma foto de salida y marca Salida</span>
+      </div>`;
+      btnEntry.style.display = 'none';
+      btnExit.style.display = '';
+      cameraArea.style.display = '';
+    }
+  } else {
+    statusEl.innerHTML = `<div style="padding:14px;background:#fff8e1;border-radius:10px;font-size:0.95rem;">
+      <strong>📸 Sin registro hoy</strong><br>
+      <span style="color:#888;font-size:0.85rem;">Toma foto de entrada y marca Entrada</span>
+    </div>`;
+    btnEntry.style.display = '';
+    btnExit.style.display = 'none';
+    cameraArea.style.display = '';
+  }
+}
+
+function resetAttendancePanel() {
+  currentAttendanceWorker = null;
+  document.getElementById('workerFound').style.display = 'none';
+  document.getElementById('attendanceDni').value = '';
+  document.getElementById('attStatus').innerHTML = '';
+  document.getElementById('btnEntry').style.display = '';
+  document.getElementById('btnExit').style.display = 'none';
+  document.getElementById('attCameraArea').style.display = '';
+  attCapturedPhoto = null;
+  document.getElementById('attPhotoPreview').style.display = 'none';
+  stopAttCamera();
+}
+
+/* Marcar asistencia (panel libre) */
+async function markAttendance(type) {
+  if (!currentAttendanceWorker) return toast('Busca un trabajador primero', 'error');
+  if (!attCapturedPhoto) return toast('Toma una foto primero', 'error');
+  const date = todayStr();
+  const now = new Date();
+  const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+  let location = null, latlng = null;
+  try {
+    const pos = await getPosition();
+    const utm = latLngToUtm(pos.coords.latitude, pos.coords.longitude);
+    location = `${utm.zone}${utm.hem} ${utm.east.toFixed(2)} E ${utm.north.toFixed(2)} N`;
+    latlng = `${pos.coords.latitude},${pos.coords.longitude}`;
+  } catch (e) {}
+  let entryPhoto = null, exitPhoto = null;
+  const uploadRes = await fetch(API + '/api/attendance/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ image: attCapturedPhoto, workerId: currentAttendanceWorker.id, date, type })
+  });
+  if (uploadRes.ok) {
+    const { filename } = await uploadRes.json();
+    if (type === 'entry') entryPhoto = filename;
+    else exitPhoto = filename;
+  }
+  attCapturedPhoto = null;
+  document.getElementById('attPhotoPreview').style.display = 'none';
+  stopAttCamera();
+  const res = await fetch(API + '/api/attendance', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ workerId: currentAttendanceWorker.id, date, type, time, location, latlng, entryPhoto, exitPhoto })
+  });
+  if (!res.ok) return toast('Error al guardar', 'error');
+  const msg = type === 'entry'
+    ? 'Entrada registrada correctamente.\nAnte cualquier detalle o consulta, comunícate con SUPERVISIÓN.'
+    : 'Salida registrada correctamente.\nAnte cualquier detalle o consulta, comunícate con SUPERVISIÓN.';
+  alert(msg);
+  resetAttendancePanel();
+  loadHistory();
+}
+
+/* Trabajadores (admin) */
+async function loadWorkers() {
+  const res = await fetch(API + '/api/workers');
+  const workers = await res.json();
+  const container = document.getElementById('workersContainer');
+  if (workers.length === 0) {
+    container.innerHTML = '<p style="color:#888;">No hay trabajadores registrados. Agrega uno arriba.</p>';
+  } else {
+    container.innerHTML = '<div class="worker-list">' + workers.map(w =>
+      `<div class="worker-tag">
+        ${w.photoData || w.photo ? `<img class="worker-photo" src="${w.photoData || '/photos/' + w.photo}" alt="">` : '<div class="worker-photo" style="background:#e0e3ff;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#1a73e8;">' + escHtml(w.name.charAt(0).toUpperCase()) + '</div>'}
+        <div>
+          <div class="name">${escHtml(w.name)}</div>
+          <div class="pos">${escHtml(w.cargo || w.position || 'Trabajador')}</div>
+          ${w.dni ? `<div style="font-size:0.75rem;color:#666;">DNI: ${escHtml(w.dni)}</div>` : ''}
+        </div>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <span class="edit-btn" onclick="editWorker('${w.id}')" title="Editar">&#9998;</span>
+          <span class="del" onclick="deleteWorker('${w.id}')">&times;</span>
+        </div>
+      </div>`
+    ).join('') + '</div>';
+  }
+  return workers;
+}
+
+async function addWorker() {
+  const name = document.getElementById('workerName').value.trim();
+  const dni = document.getElementById('workerDni').value.trim();
+  const email = document.getElementById('workerEmail').value.trim();
+  let celular = document.getElementById('workerCelular').value.trim();
+  const cargo = document.getElementById('workerCargo').value;
+
+  if (!name) return toast('Ingresa un nombre', 'error');
+  if (!cargo) return toast('Selecciona un cargo', 'error');
+  if (dni && !/^\d{8}$/.test(dni)) return toast('DNI debe tener 8 dígitos numéricos', 'error');
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('Correo electrónico inválido', 'error');
+  if (celular) {
+    if (/^\d{9}$/.test(celular)) celular = '+51' + celular;
+    else if (!/^\+51\d{9}$/.test(celular)) return toast('Celular debe ser +51 seguido de 9 dígitos', 'error');
+  }
+
+  if (editingWorkerId) {
+    const patchData = { name, dni, email, celular, cargo };
+    if (capturedPhoto) {
+      const uploadRes = await fetch(API + '/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: capturedPhoto, workerId: editingWorkerId })
+      });
+      if (uploadRes.ok) {
+        const { filename } = await uploadRes.json();
+        patchData.photo = filename;
+        if (editingWorkerPhoto) {
+          fetch(API + '/api/upload/' + editingWorkerPhoto, { method: 'DELETE' });
+        }
+        clearCapturedPhoto();
+      }
+    }
+    const res = await fetch(API + '/api/workers/' + editingWorkerId, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patchData)
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      return toast(err.error || 'Error al actualizar', 'error');
+    }
+    cancelEdit();
+    toast('Trabajador actualizado');
+  } else {
+    const existing = await (await fetch(API + '/api/workers')).json();
+    if (existing.some(w => w.name.toLowerCase() === name.toLowerCase())) {
+      return toast('Ya existe un trabajador con ese nombre', 'error');
+    }
+    const res = await fetch(API + '/api/workers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, dni, email, celular, cargo })
+    });
+    if (!res.ok) return toast('Error al registrar', 'error');
+    const worker = await res.json();
+    if (capturedPhoto) {
+      const uploadRes = await fetch(API + '/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: capturedPhoto, workerId: worker.id })
+      });
+      if (uploadRes.ok) {
+        const { filename } = await uploadRes.json();
+        await fetch(API + '/api/workers/' + worker.id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ photo: filename })
+        });
+      }
+      clearCapturedPhoto();
+    }
+    document.getElementById('workerName').value = '';
+    document.getElementById('workerDni').value = '';
+    document.getElementById('workerEmail').value = '';
+    document.getElementById('workerCelular').value = '';
+    document.getElementById('workerCargo').value = '';
+    toast('Trabajador registrado');
+  }
+  loadWorkers();
+}
+
+async function deleteWorker(id) {
+  if (!confirm('Eliminar este trabajador?')) return;
+  const res = await fetch(API + '/api/workers/' + id, { method: 'DELETE' });
+  if (!res.ok) return toast('Error al eliminar trabajador', 'error');
+  toast('Trabajador eliminado');
+  loadWorkers();
+}
+
+async function editWorker(id) {
+  const res = await fetch(API + '/api/workers');
+  const workers = await res.json();
+  const w = workers.find(x => x.id === id);
+  if (!w) return toast('Trabajador no encontrado', 'error');
+  editingWorkerId = id;
+  editingWorkerPhoto = w.photo || null;
+  capturedPhoto = null;
+  const preview = document.getElementById('photoPreview');
+  if (w.photoData || w.photo) {
+    preview.src = w.photoData || '/photos/' + w.photo;
+    preview.style.display = '';
+  } else {
+    preview.style.display = 'none';
+  }
+  document.getElementById('workerName').value = w.name;
+  document.getElementById('workerDni').value = w.dni || '';
+  document.getElementById('workerEmail').value = w.email || '';
+  document.getElementById('workerCelular').value = w.celular || '';
+  document.getElementById('workerCargo').value = w.cargo || '';
+  document.querySelector('#panelSupervision h2:first-child').textContent = 'Editar Trabajador';
+  document.getElementById('saveBtn').textContent = 'Actualizar';
+  document.getElementById('cancelBtn').style.display = '';
+  document.getElementById('workerName').focus();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelEdit() {
+  editingWorkerId = null;
+  editingWorkerPhoto = null;
+  capturedPhoto = null;
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('workerName').value = '';
+  document.getElementById('workerDni').value = '';
+  document.getElementById('workerEmail').value = '';
+  document.getElementById('workerCelular').value = '';
+  document.getElementById('workerCargo').value = '';
+  document.querySelector('#panelSupervision h2:first-child').textContent = 'Registrar Trabajador';
+  document.getElementById('saveBtn').textContent = 'Agregar';
+  document.getElementById('cancelBtn').style.display = 'none';
+}
+
+/* Importación masiva */
+function downloadTemplate() {
+  const bom = '\uFEFF';
+  const csv = bom + 'Nombre completo,DNI,Correo electrónico,Celular,Cargo\n' +
+    '"Ejemplo: Juan Pérez","12345678","juan@correo.com","+51999000000","Ing. Supervisor"\n' +
+    '"Ejemplo: María López","87654321","maria@correo.com","+51999000001","Técnico Electricista"\n';
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'plantilla_trabajadores.csv';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+  toast('Plantilla descargada');
+}
+
+async function importWorkers() {
+  const fileInput = document.getElementById('csvFile');
+  if (!fileInput.files.length) return toast('Selecciona un archivo CSV', 'error');
+  const text = await fileInput.files[0].text();
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return toast('El archivo está vacío o solo tiene encabezados', 'error');
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+  const nameIdx = headers.findIndex(h => h.includes('nombre'));
+  const dniIdx = headers.findIndex(h => h.includes('dni'));
+  const emailIdx = headers.findIndex(h => h.includes('correo') || h.includes('email'));
+  const celIdx = headers.findIndex(h => h.includes('celular') || h.includes('teléfono') || h.includes('telefono'));
+  const cargoIdx = headers.findIndex(h => h.includes('cargo') || h.includes('puesto') || h.includes('posición') || h.includes('posicion'));
+  if (nameIdx < 0) return toast('La columna "Nombre completo" es obligatoria', 'error');
+  const resultDiv = document.getElementById('importResults');
+  resultDiv.innerHTML = 'Procesando...';
+  let success = 0, errors = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = parseCSVLine(lines[i]);
+    const name = (cols[nameIdx] || '').trim();
+    if (!name) { errors.push(`Fila ${i+1}: nombre vacío`); continue; }
+    const dni = dniIdx >= 0 ? (cols[dniIdx] || '').trim() : '';
+    const email = emailIdx >= 0 ? (cols[emailIdx] || '').trim() : '';
+    let celular = celIdx >= 0 ? (cols[celIdx] || '').trim() : '';
+    if (celular && /^\d{9}$/.test(celular)) celular = '+51' + celular;
+    const cargo = cargoIdx >= 0 ? (cols[cargoIdx] || '').trim() : 'Trabajador';
+    try {
+      const wRes = await fetch(API + '/api/workers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, dni, email, celular, cargo })
+      });
+      if (wRes.ok) {
+        success++;
+        resultDiv.innerHTML = `✅ ${success} importados`;
+      } else {
+        const err = await wRes.json();
+        errors.push(`Fila ${i+1} (${name}): ${err.error || 'error'}`);
+        resultDiv.innerHTML = `✅ ${success} importados, ⚠️ ${errors.length} errores`;
+      }
+    } catch (e) {
+      errors.push(`Fila ${i+1} (${name}): error de conexión`);
+    }
+  }
+  let html = `<div style="margin-top:8px;">✅ <strong>${success}</strong> trabajadores importados`;
+  if (errors.length) html += ` | ⚠️ <strong>${errors.length}</strong> errores`;
+  html += `</div>`;
+  if (errors.length) {
+    html += `<div style="margin-top:6px;max-height:120px;overflow-y:auto;font-size:0.8rem;color:#c5221f;">`;
+    html += errors.map(e => `<div>• ${escHtml(e)}</div>`).join('');
+    html += `</div>`;
+  }
+  resultDiv.innerHTML = html;
+  fileInput.value = '';
+  loadWorkers();
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let current = '', inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
+        current += '"'; i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+    if (c === ',' && !inQuotes) { result.push(current); current = ''; continue; }
+    current += c;
+  }
+  result.push(current);
+  return result;
+}
+
+/* Asistencia - eliminar */
+async function deleteAttendance(workerId, date) {
+  if (!confirm('¿Eliminar este registro de asistencia? También se borrarán las fotos.')) return;
+  const res = await fetch(API + '/api/attendance/' + workerId + '/' + date, { method: 'DELETE' });
+  if (!res.ok) return toast('Error al eliminar', 'error');
+  toast('Registro eliminado — el trabajador puede volver a marcar');
+  loadHistory();
+  resetAttendancePanel();
+}
+
+/* Modal editar asistencia */
+let editWorkerId = null;
+let editDate = null;
+
+async function openEditModal(workerId, date) {
+  editWorkerId = workerId;
+  editDate = date;
+  const res = await fetch(API + '/api/attendance/history');
+  const records = await res.json();
+  const rec = records.find(r => r.workerId === workerId && r.date === date);
+  if (!rec) return toast('Registro no encontrado', 'error');
+  document.getElementById('editWorkerName').textContent = rec.workerName + ' — ' + date;
+  document.getElementById('editEntryTime').value = rec.entryTime ? rec.entryTime.substring(0,5) : '';
+  document.getElementById('editExitTime').value = rec.exitTime ? rec.exitTime.substring(0,5) : '';
+  const photosDiv = document.getElementById('editModalPhotos');
+  photosDiv.innerHTML = '';
+    if (rec.entryPhotoData || rec.entryPhoto) {
+      const src = rec.entryPhotoData || '/attendance_photos/' + rec.entryPhoto;
+      photosDiv.innerHTML += `<div><img src="${src}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #34a853;"><br><span style="font-size:0.8rem;color:#34a853;">Foto Entrada</span></div>`;
+    }
+    if (rec.exitPhotoData || rec.exitPhoto) {
+      const src = rec.exitPhotoData || '/attendance_photos/' + rec.exitPhoto;
+      photosDiv.innerHTML += `<div><img src="${src}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #1a73e8;"><br><span style="font-size:0.8rem;color:#1a73e8;">Foto Salida</span></div>`;
+    }
+  document.getElementById('editModal').style.display = '';
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').style.display = 'none';
+  editWorkerId = null;
+  editDate = null;
+}
+
+async function saveEditAttendance() {
+  if (!editWorkerId || !editDate) return;
+  const entryTime = document.getElementById('editEntryTime').value;
+  const exitTime = document.getElementById('editExitTime').value;
+  if (!entryTime && !exitTime) return toast('Debes ingresar al menos una hora', 'error');
+  const body = {};
+  if (entryTime) {
+    body.entryTime = entryTime + ':00';
+    const [h, m] = entryTime.split(':').map(Number);
+    body.entryStatus = h * 60 + m <= 480 ? 'puntual' : 'tardanza';
+  }
+  if (exitTime) {
+    body.exitTime = exitTime + ':00';
+    const [h, m] = exitTime.split(':').map(Number);
+    const mins = h * 60 + m;
+    body.exitStatus = mins >= 990 && mins <= 1020 ? 'normal' : (mins > 1020 ? 'fuera_horario' : 'anticipado');
+  }
+  const res = await fetch(API + '/api/attendance/' + editWorkerId + '/' + editDate, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) return toast('Error al guardar', 'error');
+  toast('Registro actualizado');
+  closeEditModal();
+  loadHistory();
+}
+
+function exportExcel() {
+  const rows = document.querySelectorAll('#historyBody tr');
+  if (!rows.length) return toast('No hay datos para exportar', 'error');
+  const bom = '\uFEFF';
+  const headers = ['Trabajador','Fecha','Entrada','Estado Entrada','Salida','Estado Salida','Foto Entrada','Foto Salida','Ubicación'];
+  let csv = headers.join(',') + '\n';
+  rows.forEach(tr => {
+    const tds = tr.querySelectorAll('td');
+    const entryPhotoA = tds[4] ? tds[4].querySelector('a') : null;
+    const exitPhotoA = tds[5] ? tds[5].querySelector('a') : null;
+    const cols = [
+      tds[0].textContent.trim(),
+      tds[1].textContent.trim(),
+      tds[2].innerText.trim().replace(/Puntual|Tardanza/g,'').trim(),
+      (tds[2].querySelector('.badge') ? tds[2].querySelector('.badge').textContent.trim() : ''),
+      tds[3].innerText.trim().replace(/Normal|Fuera horario|Anticipado/g,'').trim(),
+      (tds[3].querySelector('.badge') ? tds[3].querySelector('.badge').textContent.trim() : ''),
+      entryPhotoA ? entryPhotoA.href : '',
+      exitPhotoA ? exitPhotoA.href : '',
+      tds[6].textContent.trim()
+    ];
+    csv += cols.map(v => '"' + (v || '').replace(/"/g, '""') + '"').join(',') + '\n';
+  });
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'asistencia_' + todayStr() + '.csv';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+  toast('Excel exportado con fotos');
+}
+
+/* Historial (admin) */
+async function loadHistory() {
+  const filterDate = document.getElementById('filterDate').value;
+  let url = API + '/api/attendance/history';
+  if (filterDate) url += '?date=' + filterDate;
+  const res = await fetch(url);
+  let records = await res.json();
+  if (filterDate) records = records.filter(r => r.date === filterDate);
+  const tbody = document.getElementById('historyBody');
+  const empty = document.getElementById('historyEmpty');
+  if (records.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = records.map(r => {
+    const entryHtml = r.entryTime
+      ? `${r.entryTime} <span class="badge ${r.entryStatus === 'puntual' ? 'badge-presente' : 'badge-tardanza'}">${r.entryStatus === 'puntual' ? 'Puntual' : 'Tardanza'}</span>`
+      : '<span style="color:#aaa;">—</span>';
+    const exitBadge = r.exitStatus === 'normal' ? 'badge-presente' : (r.exitStatus === 'fuera_horario' ? 'badge-tardanza' : 'badge-ausente');
+    const exitLabel = r.exitStatus === 'normal' ? 'Normal' : (r.exitStatus === 'fuera_horario' ? 'Fuera horario' : 'Anticipado');
+    const exitHtml = r.exitTime ? `${r.exitTime} <span class="badge ${exitBadge}">${exitLabel}</span>` : '<span style="color:#aaa;">—</span>';
+    const entrySrc = r.entryPhotoData || (r.entryPhoto ? '/attendance_photos/' + r.entryPhoto : null);
+    const photoEntry = entrySrc
+      ? `<a href="${entrySrc}" target="_blank"><img class="att-photo-thumb" src="${entrySrc}" title="Foto entrada"></a>`
+      : '<span style="color:#aaa;">—</span>';
+    const exitSrc = r.exitPhotoData || (r.exitPhoto ? '/attendance_photos/' + r.exitPhoto : null);
+    const photoExit = exitSrc
+      ? `<a href="${exitSrc}" target="_blank"><img class="att-photo-thumb" src="${exitSrc}" title="Foto salida"></a>`
+      : '<span style="color:#aaa;">—</span>';
+    const locHtml = r.latlng
+      ? `<a href="https://www.google.com/maps?q=${r.latlng}" target="_blank" title="Ver en Google Maps" style="font-size:0.8rem;">${escHtml(r.location || 'Ver mapa')}</a>`
+      : '<span style="color:#aaa;font-size:0.8rem;">—</span>';
+    const actions = `<button class="btn btn-outline btn-sm" onclick="openEditModal('${r.workerId}','${r.date}')" style="margin-right:4px;">✏️</button><button class="btn btn-danger btn-sm" onclick="deleteAttendance('${r.workerId}','${r.date}')">🗑️</button>`;
+    return `<tr>
+      <td><strong>${escHtml(r.workerName)}</strong></td>
+      <td style="white-space:nowrap;">${r.date}</td>
+      <td style="white-space:nowrap;">${entryHtml}</td>
+      <td style="white-space:nowrap;">${exitHtml}</td>
+      <td>${photoEntry}</td>
+      <td>${photoExit}</td>
+      <td>${locHtml}</td>
+      <td style="white-space:nowrap;">${actions}</td>
+    </tr>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+</body>
+</html>

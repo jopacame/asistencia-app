@@ -1,0 +1,8 @@
+node_modules/
+data/photos/*
+data/attendance_photos/*
+!data/photos/.gitkeep
+!data/attendance_photos/.gitkeep
+.env
+tunnel_log.txt
+tunnel_url.txt

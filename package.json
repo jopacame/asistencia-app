@@ -1,0 +1,19 @@
+{
+  "name": "asistencia-app",
+  "version": "1.0.0",
+  "description": "App para tomar asistencia a trabajadores",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^4.18.2",
+    "mongoose": "^9.8.0"
+  },
+  "optionalDependencies": {
+    "cloudflared": "^0.7.1",
+    "localtunnel": "^2.0.2"
+  }
+}

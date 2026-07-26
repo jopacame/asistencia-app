@@ -1,0 +1,40 @@
+[
+  {
+    "id": "1785085897158",
+    "name": "Test",
+    "position": "Test",
+    "createdAt": "2026-07-26T17:11:37.158Z"
+  },
+  {
+    "id": "1785086027169",
+    "name": "Juan",
+    "position": "Cajero",
+    "createdAt": "2026-07-26T17:13:47.169Z"
+  },
+  {
+    "id": "1785086104106",
+    "name": "Maria",
+    "position": "Mesera",
+    "createdAt": "2026-07-26T17:15:04.106Z"
+  },
+  {
+    "id": "1785086215614",
+    "name": "Jorge Paúl Castro Mendoza",
+    "position": "Castro",
+    "createdAt": "2026-07-26T17:16:55.614Z",
+    "photo": "1785086215614_1785088129006.jpg",
+    "dni": "40658160",
+    "email": "jopacame@gmail.com",
+    "celular": "+51930509165",
+    "cargo": "Ing. Supervisor"
+  },
+  {
+    "id": "1785087676308",
+    "name": "Carlos Actualizado",
+    "dni": "87654321",
+    "email": "carlos.new@test.com",
+    "celular": "+51999999999",
+    "cargo": "Ing. Coordinador",
+    "createdAt": "2026-07-26T17:41:16.308Z"
+  }
+]

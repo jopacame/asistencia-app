@@ -1,0 +1,41 @@
+[
+  {
+    "workerId": "1785086027169",
+    "date": "2026-07-26",
+    "status": "presente",
+    "time": "12:17:06 p. m."
+  },
+  {
+    "workerId": "1785086104106",
+    "date": "2026-07-26",
+    "status": "presente",
+    "time": "12:17:05 p. m."
+  },
+  {
+    "workerId": "1785085897158",
+    "date": "2026-07-26",
+    "entryTime": "07:30:00",
+    "entryStatus": "puntual",
+    "location": "18N 456789 E 9876543 N",
+    "latlng": "-12.046,-77.042",
+    "exitTime": "16:45:00",
+    "exitStatus": "normal"
+  },
+  {
+    "workerId": "1785085897158",
+    "date": "2026-07-27",
+    "entryTime": "08:30:00",
+    "entryStatus": "tardanza",
+    "exitTime": "17:30:00",
+    "exitStatus": "fuera_horario"
+  },
+  {
+    "workerId": "1785086215614",
+    "date": "2026-07-26",
+    "entryTime": "06:50:00",
+    "entryStatus": "puntual",
+    "entryPhoto": "1785086215614_2026-07-26_entry_1785091159339.jpg",
+    "location": "19S 178927.03 E 8503598.88 N",
+    "latlng": "-13.518332469159802,-71.96588782357084"
+  }
+]
