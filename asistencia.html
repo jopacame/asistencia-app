@@ -157,6 +157,26 @@
       border:2px solid #e0e3ff; cursor:pointer; transition:transform 0.2s;
     }
     .att-photo-thumb:hover { transform:scale(1.15); }
+    .photo-viewer-overlay {
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.85); z-index:3000;
+      display:flex; align-items:center; justify-content:center;
+      cursor:zoom-out;
+    }
+    .photo-viewer-overlay img {
+      max-width:95%; max-height:95%; border-radius:8px;
+      box-shadow:0 4px 40px rgba(0,0,0,0.5);
+      object-fit:contain;
+    }
+    .photo-viewer-close {
+      position:fixed; top:16px; right:24px;
+      font-size:2rem; color:#fff; cursor:pointer;
+      z-index:3001; background:rgba(0,0,0,0.4);
+      width:44px; height:44px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      transition:background 0.2s;
+    }
+    .photo-viewer-close:hover { background:rgba(255,255,255,0.2); }
 
     @media (max-width: 600px) {
       .hero h1 { font-size: 1.6rem; }
@@ -338,6 +358,11 @@
       <button class="btn btn-primary" onclick="saveEditAttendance()">Guardar Cambios</button>
     </div>
   </div>
+</div>
+
+<div id="photoViewer" class="photo-viewer-overlay" style="display:none;" onclick="if(event.target===this)closePhotoViewer()">
+  <span class="photo-viewer-close" onclick="closePhotoViewer()">&times;</span>
+  <img id="photoViewerImg" src="" alt="Foto">
 </div>
 
 <script>
@@ -967,12 +992,12 @@ async function openEditModal(workerId, date) {
   const photosDiv = document.getElementById('editModalPhotos');
   photosDiv.innerHTML = '';
     if (rec.entryPhotoData) {
-      photosDiv.innerHTML += `<div><img src="${rec.entryPhotoData}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #34a853;"><br><span style="font-size:0.8rem;color:#34a853;">Foto Entrada</span></div>`;
+      photosDiv.innerHTML += `<div><img src="${rec.entryPhotoData}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #34a853;cursor:pointer;" onclick="openPhotoViewer(this.src)"><br><span style="font-size:0.8rem;color:#34a853;">Foto Entrada</span></div>`;
     } else if (rec.entryPhoto) {
       photosDiv.innerHTML += `<div style="padding:12px;background:#f5f5f5;border-radius:8px;text-align:center;color:#888;font-size:0.85rem;">📷 Foto entrada no disponible en la nube</div>`;
     }
     if (rec.exitPhotoData) {
-      photosDiv.innerHTML += `<div><img src="${rec.exitPhotoData}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #1a73e8;"><br><span style="font-size:0.8rem;color:#1a73e8;">Foto Salida</span></div>`;
+      photosDiv.innerHTML += `<div><img src="${rec.exitPhotoData}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #1a73e8;cursor:pointer;" onclick="openPhotoViewer(this.src)"><br><span style="font-size:0.8rem;color:#1a73e8;">Foto Salida</span></div>`;
     } else if (rec.exitPhoto) {
       photosDiv.innerHTML += `<div style="padding:12px;background:#f5f5f5;border-radius:8px;text-align:center;color:#888;font-size:0.85rem;">📷 Foto salida no disponible en la nube</div>`;
     }
@@ -1071,10 +1096,10 @@ async function loadHistory() {
     const exitLabel = r.exitStatus === 'normal' ? 'Normal' : (r.exitStatus === 'fuera_horario' ? 'Fuera horario' : 'Anticipado');
     const exitHtml = r.exitTime ? `${r.exitTime} <span class="badge ${exitBadge}">${exitLabel}</span>` : '<span style="color:#aaa;">—</span>';
     const photoEntry = r.entryPhotoData
-      ? `<a href="${r.entryPhotoData}" target="_blank"><img class="att-photo-thumb" src="${r.entryPhotoData}" title="Foto entrada"></a>`
+      ? `<img class="att-photo-thumb" src="${r.entryPhotoData}" title="Foto entrada" onclick="openPhotoViewer(this.src)">`
       : (r.entryPhoto ? '<span style="color:#aaa;font-size:0.8rem;">📷 foto local</span>' : '<span style="color:#aaa;">—</span>');
     const photoExit = r.exitPhotoData
-      ? `<a href="${r.exitPhotoData}" target="_blank"><img class="att-photo-thumb" src="${r.exitPhotoData}" title="Foto salida"></a>`
+      ? `<img class="att-photo-thumb" src="${r.exitPhotoData}" title="Foto salida" onclick="openPhotoViewer(this.src)">`
       : (r.exitPhoto ? '<span style="color:#aaa;font-size:0.8rem;">📷 foto local</span>' : '<span style="color:#aaa;">—</span>');
     const locHtml = r.latlng
       ? `<a href="https://www.google.com/maps?q=${r.latlng}" target="_blank" title="Ver en Google Maps" style="font-size:0.8rem;">${escHtml(r.location || 'Ver mapa')}</a>`
@@ -1097,6 +1122,18 @@ function escHtml(s) {
   const div = document.createElement('div');
   div.textContent = s;
   return div.innerHTML;
+}
+
+function openPhotoViewer(src) {
+  document.getElementById('photoViewerImg').src = src;
+  document.getElementById('photoViewer').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closePhotoViewer() {
+  document.getElementById('photoViewer').style.display = 'none';
+  document.getElementById('photoViewerImg').src = '';
+  document.body.style.overflow = '';
 }
 
 if ('serviceWorker' in navigator) {
