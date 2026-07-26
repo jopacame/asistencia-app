@@ -197,7 +197,7 @@ app.delete('/api/upload/:filename', (req, res) => {
   res.json({ success: true });
 });
 
-app.post('/api/attendance/upload', async (req, res) => {
+app.post('/api/attendance/upload', (req, res) => {
   const { image, workerId, date, type } = req.body;
   if (!image) return res.status(400).json({ error: 'Imagen requerida' });
   const matches = image.match(/^data:image\/(\w+);base64,(.+)$/);
@@ -206,8 +206,6 @@ app.post('/api/attendance/upload', async (req, res) => {
   const data = Buffer.from(matches[2], 'base64');
   const filename = `${workerId}_${date}_${type}_${Date.now()}.${ext}`;
   try { fs.writeFileSync(path.join(ATTENDANCE_PHOTOS_DIR, filename), data); } catch (e) {}
-  const updateField = type === 'entry' ? { entryPhotoData: image } : { exitPhotoData: image };
-  try { await Attendance.findOneAndUpdate({ workerId, date }, updateField); } catch (e) {}
   res.json({ filename });
 });
 

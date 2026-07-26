@@ -658,11 +658,12 @@ async function markAttendance(type) {
     location = `${utm.zone}${utm.hem} ${utm.east.toFixed(2)} E ${utm.north.toFixed(2)} N`;
     latlng = `${pos.coords.latitude},${pos.coords.longitude}`;
   } catch (e) {}
+  const photoData = attCapturedPhoto;
   let entryPhoto = null, exitPhoto = null;
   const uploadRes = await fetch(API + '/api/attendance/upload', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: attCapturedPhoto, workerId: currentAttendanceWorker.id, date, type })
+    body: JSON.stringify({ image: photoData, workerId: currentAttendanceWorker.id, date, type })
   });
   if (uploadRes.ok) {
     const { filename } = await uploadRes.json();
@@ -672,10 +673,12 @@ async function markAttendance(type) {
   attCapturedPhoto = null;
   document.getElementById('attPhotoPreview').style.display = 'none';
   stopAttCamera();
+  const body = { workerId: currentAttendanceWorker.id, date, type, time, location, latlng, entryPhoto, exitPhoto };
+  body[type === 'entry' ? 'entryPhotoData' : 'exitPhotoData'] = photoData;
   const res = await fetch(API + '/api/attendance', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ workerId: currentAttendanceWorker.id, date, type, time, location, latlng, entryPhoto, exitPhoto })
+    body: JSON.stringify(body)
   });
   if (!res.ok) return toast('Error al guardar', 'error');
   const msg = type === 'entry'
