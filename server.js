@@ -233,7 +233,7 @@ mongoose.connect(MONGO_URI).then(async () => {
 }).then(() => {
   app.listen(PORT, '0.0.0.0', () => {
     const local = getLocalIP();
-    console.log(`\n  ✅ AsistenciaApp lista`);
+    console.log(`\n  ✅ JOPACAMEAsistencia lista`);
     console.log(`  📍 Red local:    http://${local}:${PORT}`);
     console.log(`  🏠 Localhost:    http://localhost:${PORT}`);
     console.log(`  ☁️  Cloud:        Despliega en Render.com desde GitHub`);

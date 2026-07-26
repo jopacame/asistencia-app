@@ -1,8 +1,8 @@
 @echo off
-title AsistenciaApp - Servidor + Tunel
+title JOPACAMEAsistencia - Servidor + Tunel
 cd /d "%~dp0"
 echo ========================================
-echo  Iniciando AsistenciaApp...
+echo  Iniciando JOPACAMEAsistencia...
 echo ========================================
 echo.
 :: Verificar si el servidor ya esta corriendo

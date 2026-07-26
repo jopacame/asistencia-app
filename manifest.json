@@ -1,7 +1,7 @@
 {
-  "name": "AsistenciaApp",
-  "short_name": "AsistenciaApp",
-  "description": "Control de asistencia para trabajadores",
+  "name": "JOPACAMEAsistencia",
+  "short_name": "JOPACAMEAsistencia",
+  "description": "Asistencia de los Trabajadores del CONSORCIO GÉNESIS",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f0f2f5",
