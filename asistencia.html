@@ -220,9 +220,8 @@
         <video id="attVideo" autoplay playsinline></video>
         <canvas id="attCanvas"></canvas>
         <div class="camera-actions">
-          <button class="btn btn-outline" onclick="startAttCamera()">📷 Abrir Cámara</button>
-          <button class="btn btn-primary" onclick="captureAttPhoto()">Tomar Foto</button>
-          <button class="btn btn-danger" onclick="stopAttCamera()" id="stopAttCam" style="display:none;">Cerrar Cámara</button>
+          <button class="btn btn-primary" onclick="captureAttPhoto()">📸 Tomar Foto</button>
+          <button class="btn btn-outline" onclick="startAttCamera()" id="startAttCamBtn" style="display:none;">📷 Abrir Cámara</button>
           <img id="attPhotoPreview" class="photo-preview" style="display:none;">
         </div>
       </div>
@@ -498,9 +497,10 @@ async function startAttCamera() {
   try {
     attMediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } });
     document.getElementById('attVideo').srcObject = attMediaStream;
-    document.getElementById('stopAttCam').style.display = '';
+    document.getElementById('startAttCamBtn').style.display = 'none';
   } catch (e) {
-    toast('No se pudo acceder a la cámara: ' + e.message, 'error');
+    document.getElementById('startAttCamBtn').style.display = '';
+    if (e.name !== 'NotAllowedError') toast('Cámara no disponible: ' + e.message, 'error');
   }
 }
 
@@ -510,7 +510,6 @@ function stopAttCamera() {
     attMediaStream = null;
   }
   document.getElementById('attVideo').srcObject = null;
-  document.getElementById('stopAttCam').style.display = 'none';
 }
 
 async function captureAttPhoto() {
@@ -583,6 +582,7 @@ async function lookupWorker() {
   }
   document.getElementById('workerFound').style.display = '';
   await startAttCamera();
+  document.getElementById('startAttCamBtn').style.display = attMediaStream ? 'none' : '';
   loadAttendanceStatus();
 }
 

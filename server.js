@@ -112,7 +112,7 @@ app.delete('/api/workers/:id', async (req, res) => {
 });
 
 app.post('/api/attendance', async (req, res) => {
-  const { workerId, date, type, time, location, latlng, entryPhoto, exitPhoto } = req.body;
+  const { workerId, date, type, time, location, latlng, entryPhoto, exitPhoto, entryPhotoData, exitPhotoData } = req.body;
   if (!workerId || !date || !type) return res.status(400).json({ error: 'Faltan datos' });
   let record = await Attendance.findOne({ workerId, date });
   if (!record) record = new Attendance({ workerId, date });
@@ -122,12 +122,14 @@ app.post('/api/attendance', async (req, res) => {
     record.entryTime = time;
     record.entryStatus = mins <= 480 ? 'puntual' : 'tardanza';
     if (entryPhoto) record.entryPhoto = entryPhoto;
+    if (entryPhotoData) record.entryPhotoData = entryPhotoData;
   } else if (type === 'exit') {
     record.exitTime = time;
     if (mins >= 990 && mins <= 1020) record.exitStatus = 'normal';
     else if (mins > 1020) record.exitStatus = 'fuera_horario';
     else record.exitStatus = 'anticipado';
     if (exitPhoto) record.exitPhoto = exitPhoto;
+    if (exitPhotoData) record.exitPhotoData = exitPhotoData;
   }
   if (location) record.location = location;
   if (latlng) record.latlng = latlng;
