@@ -284,8 +284,9 @@
   <div class="card">
     <h2>📋 Control de Asistencia Diario</h2>
     <div class="form-row">
-      <input type="text" id="attendanceDni" class="dni-input" placeholder="Ingresa DNI del trabajador" maxlength="8" inputmode="numeric">
+      <input type="text" id="attendanceDni" class="dni-input" placeholder="Ingresa DNI del trabajador" maxlength="8" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
       <button class="btn btn-primary" onclick="lookupWorker()">Buscar</button>
+      <div id="dniHint" style="width:100%;font-size:0.75rem;color:#888;margin-top:-6px;">Solo números · 8 dígitos</div>
     </div>
 
     <div id="workerNotFound" style="display:none;padding:24px;text-align:center;background:#fce8e6;border-radius:10px;margin-top:12px;">
@@ -650,6 +651,7 @@ let currentAttendanceWorker = null;
 async function lookupWorker() {
   const dni = document.getElementById('attendanceDni').value.trim();
   if (!dni) return toast('Ingresa un DNI', 'error');
+  if (!/^\d{8}$/.test(dni)) return toast('El DNI debe tener exactamente 8 dígitos numéricos', 'error');
   const res = await fetch(API + '/api/workers');
   const workers = await res.json();
   const w = workers.find(x => x.dni === dni);
