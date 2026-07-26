@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
   <rect width="192" height="192" rx="32" fill="#1a73e8"/>
-  <text x="96" y="128" font-family="Arial,sans-serif" font-size="96" font-weight="bold" fill="#fff" text-anchor="middle">A</text>
+  <rect x="44" y="50" width="104" height="100" rx="14" fill="#fff"/>
+  <rect x="54" y="60" width="84" height="80" rx="8" fill="#e8f0fe"/>
+  <rect x="80" y="40" width="32" height="22" rx="6" fill="#fff" stroke="#c5d5e8" stroke-width="2"/>
+  <path d="M68 104 l18 18 38 -44" fill="none" stroke="#1a73e8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
