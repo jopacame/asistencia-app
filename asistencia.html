@@ -572,8 +572,8 @@ async function lookupWorker() {
   document.getElementById('attWorkerCargo').textContent = w.cargo || 'Trabajador';
   const photoImg = document.getElementById('attWorkerPhoto');
   const avatar = document.getElementById('attWorkerAvatar');
-  if (w.photoData || w.photo) {
-    photoImg.src = w.photoData || '/photos/' + w.photo;
+  if (w.photoData) {
+    photoImg.src = w.photoData;
     photoImg.style.display = '';
     avatar.style.display = 'none';
   } else {
@@ -696,7 +696,7 @@ async function loadWorkers() {
   } else {
     container.innerHTML = '<div class="worker-list">' + workers.map(w =>
       `<div class="worker-tag">
-        ${w.photoData || w.photo ? `<img class="worker-photo" src="${w.photoData || '/photos/' + w.photo}" alt="">` : '<div class="worker-photo" style="background:#e0e3ff;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#1a73e8;">' + escHtml(w.name.charAt(0).toUpperCase()) + '</div>'}
+        ${w.photoData ? `<img class="worker-photo" src="${w.photoData}" alt="">` : '<div class="worker-photo" style="background:#e0e3ff;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#1a73e8;">' + escHtml(w.name.charAt(0).toUpperCase()) + '</div>'}
         <div>
           <div class="name">${escHtml(w.name)}</div>
           <div class="pos">${escHtml(w.cargo || w.position || 'Trabajador')}</div>
@@ -811,8 +811,8 @@ async function editWorker(id) {
   editingWorkerPhoto = w.photo || null;
   capturedPhoto = null;
   const preview = document.getElementById('photoPreview');
-  if (w.photoData || w.photo) {
-    preview.src = w.photoData || '/photos/' + w.photo;
+  if (w.photoData) {
+    preview.src = w.photoData;
     preview.style.display = '';
   } else {
     preview.style.display = 'none';
@@ -963,13 +963,15 @@ async function openEditModal(workerId, date) {
   document.getElementById('editExitTime').value = rec.exitTime ? rec.exitTime.substring(0,5) : '';
   const photosDiv = document.getElementById('editModalPhotos');
   photosDiv.innerHTML = '';
-    if (rec.entryPhotoData || rec.entryPhoto) {
-      const src = rec.entryPhotoData || '/attendance_photos/' + rec.entryPhoto;
-      photosDiv.innerHTML += `<div><img src="${src}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #34a853;"><br><span style="font-size:0.8rem;color:#34a853;">Foto Entrada</span></div>`;
+    if (rec.entryPhotoData) {
+      photosDiv.innerHTML += `<div><img src="${rec.entryPhotoData}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #34a853;"><br><span style="font-size:0.8rem;color:#34a853;">Foto Entrada</span></div>`;
+    } else if (rec.entryPhoto) {
+      photosDiv.innerHTML += `<div style="padding:12px;background:#f5f5f5;border-radius:8px;text-align:center;color:#888;font-size:0.85rem;">📷 Foto entrada no disponible en la nube</div>`;
     }
-    if (rec.exitPhotoData || rec.exitPhoto) {
-      const src = rec.exitPhotoData || '/attendance_photos/' + rec.exitPhoto;
-      photosDiv.innerHTML += `<div><img src="${src}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #1a73e8;"><br><span style="font-size:0.8rem;color:#1a73e8;">Foto Salida</span></div>`;
+    if (rec.exitPhotoData) {
+      photosDiv.innerHTML += `<div><img src="${rec.exitPhotoData}" style="width:100px;height:100px;object-fit:cover;border-radius:8px;border:2px solid #1a73e8;"><br><span style="font-size:0.8rem;color:#1a73e8;">Foto Salida</span></div>`;
+    } else if (rec.exitPhoto) {
+      photosDiv.innerHTML += `<div style="padding:12px;background:#f5f5f5;border-radius:8px;text-align:center;color:#888;font-size:0.85rem;">📷 Foto salida no disponible en la nube</div>`;
     }
   document.getElementById('editModal').style.display = '';
 }
@@ -1065,14 +1067,12 @@ async function loadHistory() {
     const exitBadge = r.exitStatus === 'normal' ? 'badge-presente' : (r.exitStatus === 'fuera_horario' ? 'badge-tardanza' : 'badge-ausente');
     const exitLabel = r.exitStatus === 'normal' ? 'Normal' : (r.exitStatus === 'fuera_horario' ? 'Fuera horario' : 'Anticipado');
     const exitHtml = r.exitTime ? `${r.exitTime} <span class="badge ${exitBadge}">${exitLabel}</span>` : '<span style="color:#aaa;">—</span>';
-    const entrySrc = r.entryPhotoData || (r.entryPhoto ? '/attendance_photos/' + r.entryPhoto : null);
-    const photoEntry = entrySrc
-      ? `<a href="${entrySrc}" target="_blank"><img class="att-photo-thumb" src="${entrySrc}" title="Foto entrada"></a>`
-      : '<span style="color:#aaa;">—</span>';
-    const exitSrc = r.exitPhotoData || (r.exitPhoto ? '/attendance_photos/' + r.exitPhoto : null);
-    const photoExit = exitSrc
-      ? `<a href="${exitSrc}" target="_blank"><img class="att-photo-thumb" src="${exitSrc}" title="Foto salida"></a>`
-      : '<span style="color:#aaa;">—</span>';
+    const photoEntry = r.entryPhotoData
+      ? `<a href="${r.entryPhotoData}" target="_blank"><img class="att-photo-thumb" src="${r.entryPhotoData}" title="Foto entrada"></a>`
+      : (r.entryPhoto ? '<span style="color:#aaa;font-size:0.8rem;">📷 foto local</span>' : '<span style="color:#aaa;">—</span>');
+    const photoExit = r.exitPhotoData
+      ? `<a href="${r.exitPhotoData}" target="_blank"><img class="att-photo-thumb" src="${r.exitPhotoData}" title="Foto salida"></a>`
+      : (r.exitPhoto ? '<span style="color:#aaa;font-size:0.8rem;">📷 foto local</span>' : '<span style="color:#aaa;">—</span>');
     const locHtml = r.latlng
       ? `<a href="https://www.google.com/maps?q=${r.latlng}" target="_blank" title="Ver en Google Maps" style="font-size:0.8rem;">${escHtml(r.location || 'Ver mapa')}</a>`
       : '<span style="color:#aaa;font-size:0.8rem;">—</span>';
