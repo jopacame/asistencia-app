@@ -316,8 +316,11 @@
       <h2>Historial de Asistencia</h2>
       <div class="form-row">
         <input type="date" id="filterDate">
+        <select id="filterWorker" style="flex:1;min-width:150px;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:0.95rem;">
+          <option value="">Todos los trabajadores</option>
+        </select>
         <button class="btn btn-outline" onclick="loadHistory()">Filtrar</button>
-        <button class="btn btn-outline" onclick="document.getElementById('filterDate').value='';loadHistory();">Todos</button>
+        <button class="btn btn-outline" onclick="document.getElementById('filterDate').value='';document.getElementById('filterWorker').value='';loadHistory();">Todos</button>
         <button class="btn btn-outline" onclick="exportExcel()">Exportar Excel</button>
         <button class="btn btn-outline" onclick="window.print()">Imprimir / PDF</button>
       </div>
@@ -718,6 +721,11 @@ async function markAttendance(type) {
 async function loadWorkers() {
   const res = await fetch(API + '/api/workers');
   const workers = await res.json();
+  const sel = document.getElementById('filterWorker');
+  if (sel) {
+    sel.innerHTML = '<option value="">Todos los trabajadores</option>' +
+      workers.map(w => `<option value="${w.id}">${escHtml(w.name)}</option>`).join('');
+  }
   const container = document.getElementById('workersContainer');
   if (workers.length === 0) {
     container.innerHTML = '<p style="color:#888;">No hay trabajadores registrados. Agrega uno arriba.</p>';
@@ -1075,11 +1083,13 @@ function exportExcel() {
 /* Historial (admin) */
 async function loadHistory() {
   const filterDate = document.getElementById('filterDate').value;
+  const filterWorker = document.getElementById('filterWorker').value;
   let url = API + '/api/attendance/history';
   if (filterDate) url += '?date=' + filterDate;
   const res = await fetch(url);
   let records = await res.json();
   if (filterDate) records = records.filter(r => r.date === filterDate);
+  if (filterWorker) records = records.filter(r => r.workerId === filterWorker);
   const tbody = document.getElementById('historyBody');
   const empty = document.getElementById('historyEmpty');
   if (records.length === 0) {
