@@ -10,6 +10,7 @@
   <meta name="theme-color" content="#1a73e8">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
     body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; color: #333; }
 
     /* Hero / Header */
@@ -178,45 +179,71 @@
     }
     .photo-viewer-close:hover { background:rgba(255,255,255,0.2); }
 
-    @media (max-width: 600px) {
-      .hero { padding: 20px 16px; }
-      .hero h1 { font-size: 1.6rem; }
-      .hero p { font-size: 0.9rem; }
-      .form-row input, .form-row select { min-width: 100%; }
+    @media (max-width: 768px) {
+      .hero { padding: 16px 12px; }
+      .hero h1 { font-size: 1.4rem; margin-bottom: 4px; }
+      .hero p { font-size: 0.85rem; }
+      #heroInner { flex-direction: column; align-items: flex-start; }
+      #heroInner > div:last-child { align-self: flex-end; }
+      .container { max-width: 100%; padding: 8px; }
+      .card { padding: 12px; margin-bottom: 12px; }
+      .card h2 { font-size: 1.1rem; margin-bottom: 10px; padding-bottom: 6px; }
+      .form-row { flex-direction: column; gap: 6px; }
+      .form-row input, .form-row select { width: 100%; min-width: 0; padding: 8px 10px; font-size: 0.9rem; }
       .today-grid { grid-template-columns: 1fr; }
-      .card { padding: 16px; }
-      .container { padding: 12px; }
-      #attVideo { max-height: 260px; }
+      #attVideo { max-height: 220px; }
       .table-wrapper { overflow-x: auto; }
-      table { font-size: 0.8rem; }
-      th, td { padding: 6px 4px; }
-      .att-photo-thumb { width: 40px; height: 40px; }
+      table { font-size: 0.75rem; }
+      th, td { padding: 4px 3px; }
+      .att-photo-thumb { width: 36px; height: 36px; }
+      .badge { font-size: 0.65rem; padding: 2px 6px; }
+      .btn { font-size: 0.85rem; padding: 8px 14px; }
+      #attendanceDni { font-size: 1.1rem; letter-spacing: 3px; padding: 8px; }
+    }
+    @media (max-width: 480px) {
+      .hero { padding: 10px 8px; }
+      .hero h1 { font-size: 1.2rem; }
+      .hero p { display: none; }
+      #heroInner > div:first-child { min-width: 0; }
+      .container { padding: 4px; }
+      .card { padding: 8px; margin-bottom: 8px; border-radius: 8px; }
+      .card h2 { font-size: 1rem; }
+      table { font-size: 0.65rem; }
+      th, td { padding: 3px 2px; }
+      .att-photo-thumb { width: 28px; height: 28px; }
+      .btn { font-size: 0.8rem; padding: 6px 10px; }
+      #attVideo { max-height: 180px; }
     }
     @media (orientation: landscape) and (max-height: 500px) {
-      .hero { padding: 8px 16px; }
-      .hero h1 { font-size: 1.2rem; }
-      .hero p { font-size: 0.75rem; display: none; }
-      .card { padding: 10px 14px; margin-bottom: 10px; }
-      .card h2 { font-size: 1rem; margin-bottom: 8px; padding-bottom: 6px; }
-      .form-row { gap: 6px; margin-bottom: 8px; }
-      .form-row input, .form-row select { padding: 6px 10px; font-size: 0.85rem; }
-      #attVideo { max-height: 160px; }
-      .camera-area { padding: 6px; }
-      .camera-actions { gap: 6px; }
-      .camera-actions .btn { font-size: 0.8rem; padding: 6px 12px; }
-      #attendanceDni { font-size: 1rem; letter-spacing: 2px; padding: 6px; }
-      .today-grid { grid-template-columns: 1fr; gap: 8px; }
-      .worker-list { gap: 6px; }
-      .worker-tag { padding: 6px 10px; }
-      .btn { font-size: 0.8rem; padding: 6px 12px; }
-      #workerFound > div:first-child { padding: 8px; margin-bottom: 8px; gap: 10px; }
-      #workerFound > div:first-child img { width: 40px; height: 40px; }
-      #workerFound > div:first-child div:first-child { width: 40px; height: 40px; font-size: 1.1rem; }
-      table { font-size: 0.7rem; }
-      th, td { padding: 4px 3px; }
-      .att-photo-thumb { width: 32px; height: 32px; }
-      .badge { font-size: 0.6rem; padding: 2px 5px; }
-      .photo-viewer-close { top: 8px; right: 12px; width: 36px; height: 36px; font-size: 1.5rem; }
+      .hero { padding: 6px 12px; }
+      .hero h1 { font-size: 1rem; margin-bottom: 0; }
+      .hero p { display: none; }
+      #heroInner { flex-direction: row; align-items: center; }
+      #heroInner > div:first-child { min-width: 0; }
+      #heroInner > div:last-child { align-self: auto; }
+      .container { max-width: 100%; padding: 4px; }
+      .card { padding: 6px 10px; margin-bottom: 6px; border-radius: 6px; }
+      .card h2 { font-size: 0.85rem; margin-bottom: 4px; padding-bottom: 4px; }
+      .form-row { flex-direction: row; gap: 4px; margin-bottom: 4px; }
+      .form-row input, .form-row select { width: auto; min-width: 80px; flex: 1; padding: 4px 8px; font-size: 0.8rem; }
+      #attVideo { max-height: 120px; }
+      .camera-area { padding: 4px; }
+      .camera-actions { gap: 4px; }
+      .camera-actions .btn { font-size: 0.75rem; padding: 4px 10px; }
+      #attendanceDni { font-size: 0.9rem; letter-spacing: 2px; padding: 4px; }
+      .today-grid { display: flex; gap: 6px; }
+      .worker-list { gap: 4px; }
+      .worker-tag { padding: 4px 8px; }
+      .btn { font-size: 0.75rem; padding: 4px 10px; }
+      #workerFound > div:first-child { padding: 6px; margin-bottom: 4px; gap: 6px; }
+      #workerFound > div:first-child img { width: 32px; height: 32px; }
+      #workerFound > div:first-child div:first-child { width: 32px; height: 32px; font-size: 0.9rem; }
+      table { font-size: 0.6rem; }
+      th, td { padding: 2px; }
+      .att-photo-thumb { width: 24px; height: 24px; }
+      .badge { font-size: 0.55rem; padding: 1px 4px; }
+      .photo-viewer-close { top: 4px; right: 8px; width: 28px; height: 28px; font-size: 1.2rem; }
+      #editModal .modal-content { padding: 12px; max-width: 95%; }
     }
 
     @media print {
@@ -234,13 +261,15 @@
 <body>
 
 <div class="hero">
-  <div style="display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto;">
-    <div style="text-align:left;">
+  <div id="heroInner" style="display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto;flex-wrap:wrap;gap:8px;">
+    <div style="text-align:left;min-width:200px;">
       <h1 style="margin:0;">JOPACAMEAsistencia</h1>
       <p style="margin:4px 0 0 0;">Asistencia de los Trabajadores del CONSORCIO GÉNESIS</p>
     </div>
-    <button class="btn btn-outline" onclick="loginAdmin()" id="mainMantenimiento" style="border-color:#fff;color:#fff;">🔧 Mantenimiento</button>
-    <button class="btn btn-outline" onclick="logoutAdmin()" id="adminLogout" style="border-color:#fff;color:#fff;display:none;">🔓 Cerrar Sesión</button>
+    <div style="display:flex;gap:8px;flex-shrink:0;">
+      <button class="btn btn-outline" onclick="loginAdmin()" id="mainMantenimiento" style="border-color:#fff;color:#fff;">🔧 Mantenimiento</button>
+      <button class="btn btn-outline" onclick="logoutAdmin()" id="adminLogout" style="border-color:#fff;color:#fff;display:none;">🔓 Cerrar Sesión</button>
+    </div>
   </div>
 </div>
 
