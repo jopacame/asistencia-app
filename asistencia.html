@@ -54,6 +54,9 @@
     .form-row input:focus, .form-row select:focus {
       outline: none; border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.15);
     }
+    .dni-input {
+      font-size: 1.2rem; text-align: center; font-weight: 600; letter-spacing: 4px;
+    }
 
     .btn {
       padding: 10px 24px; border: none; border-radius: 8px;
@@ -180,16 +183,18 @@
     .photo-viewer-close:hover { background:rgba(255,255,255,0.2); }
 
     @media (max-width: 768px) {
-      .hero { padding: 16px 12px; }
-      .hero h1 { font-size: 1.4rem; margin-bottom: 4px; }
-      .hero p { font-size: 0.85rem; }
-      #heroInner { flex-direction: column; align-items: flex-start; }
+      .hero { padding: 12px; }
+      .hero h1 { font-size: 1.3rem; margin-bottom: 2px; word-break: break-word; }
+      .hero p { font-size: 0.8rem; }
+      #heroInner { flex-direction: column; align-items: flex-start; width: 100%; }
       #heroInner > div:last-child { align-self: flex-end; }
+      #heroInner > div:first-child { min-width: 0; width: 100%; }
       .container { max-width: 100%; padding: 8px; }
       .card { padding: 12px; margin-bottom: 12px; }
-      .card h2 { font-size: 1.1rem; margin-bottom: 10px; padding-bottom: 6px; }
+      .card h2 { font-size: 1.1rem; margin-bottom: 8px; padding-bottom: 6px; }
       .form-row { flex-direction: column; gap: 6px; }
-      .form-row input, .form-row select { width: 100%; min-width: 0; padding: 8px 10px; font-size: 0.9rem; }
+      .form-row input, .form-row select { width: 100% !important; min-width: 0; padding: 8px 10px; font-size: 0.9rem; }
+      .dni-input { font-size: 1.1rem; letter-spacing: 3px; padding: 8px; }
       .today-grid { grid-template-columns: 1fr; }
       #attVideo { max-height: 220px; }
       .table-wrapper { overflow-x: auto; }
@@ -198,16 +203,15 @@
       .att-photo-thumb { width: 36px; height: 36px; }
       .badge { font-size: 0.65rem; padding: 2px 6px; }
       .btn { font-size: 0.85rem; padding: 8px 14px; }
-      #attendanceDni { font-size: 1.1rem; letter-spacing: 3px; padding: 8px; }
     }
     @media (max-width: 480px) {
-      .hero { padding: 10px 8px; }
-      .hero h1 { font-size: 1.2rem; }
-      .hero p { display: none; }
-      #heroInner > div:first-child { min-width: 0; }
+      .hero { padding: 8px; }
+      .hero h1 { font-size: 1.1rem; }
+      .hero p { font-size: 0.7rem; }
       .container { padding: 4px; }
       .card { padding: 8px; margin-bottom: 8px; border-radius: 8px; }
-      .card h2 { font-size: 1rem; }
+      .card h2 { font-size: 0.95rem; }
+      .dni-input { font-size: 1rem; letter-spacing: 2px; padding: 6px; }
       table { font-size: 0.65rem; }
       th, td { padding: 3px 2px; }
       .att-photo-thumb { width: 28px; height: 28px; }
@@ -215,22 +219,22 @@
       #attVideo { max-height: 180px; }
     }
     @media (orientation: landscape) and (max-height: 500px) {
-      .hero { padding: 6px 12px; }
-      .hero h1 { font-size: 1rem; margin-bottom: 0; }
+      .hero { padding: 4px 12px; }
+      .hero h1 { font-size: 0.95rem; margin-bottom: 0; }
       .hero p { display: none; }
-      #heroInner { flex-direction: row; align-items: center; }
-      #heroInner > div:first-child { min-width: 0; }
+      #heroInner { flex-direction: row; align-items: center; width: 100%; }
+      #heroInner > div:first-child { min-width: 0; width: auto; }
       #heroInner > div:last-child { align-self: auto; }
       .container { max-width: 100%; padding: 4px; }
       .card { padding: 6px 10px; margin-bottom: 6px; border-radius: 6px; }
       .card h2 { font-size: 0.85rem; margin-bottom: 4px; padding-bottom: 4px; }
       .form-row { flex-direction: row; gap: 4px; margin-bottom: 4px; }
       .form-row input, .form-row select { width: auto; min-width: 80px; flex: 1; padding: 4px 8px; font-size: 0.8rem; }
+      .dni-input { font-size: 0.9rem; letter-spacing: 2px; padding: 4px; }
       #attVideo { max-height: 120px; }
       .camera-area { padding: 4px; }
       .camera-actions { gap: 4px; }
       .camera-actions .btn { font-size: 0.75rem; padding: 4px 10px; }
-      #attendanceDni { font-size: 0.9rem; letter-spacing: 2px; padding: 4px; }
       .today-grid { display: flex; gap: 6px; }
       .worker-list { gap: 4px; }
       .worker-tag { padding: 4px 8px; }
@@ -279,7 +283,7 @@
   <div class="card">
     <h2>📋 Control de Asistencia Diario</h2>
     <div class="form-row">
-      <input type="text" id="attendanceDni" placeholder="Ingresa DNI del trabajador" maxlength="8" inputmode="numeric" style="font-size:1.2rem;text-align:center;font-weight:600;letter-spacing:4px;">
+      <input type="text" id="attendanceDni" class="dni-input" placeholder="Ingresa DNI del trabajador" maxlength="8" inputmode="numeric">
       <button class="btn btn-primary" onclick="lookupWorker()">Buscar</button>
     </div>
 
